@@ -1,7 +1,7 @@
 In order to build the library for Windows:
 1) make sure you have MSys + mingw (or mingw64, if you need 64 bits) installed in your OS.
 2) Create either "openssl/" or "gmp/" folder, depending which lib you prefer (gmp seems faster).
-3) Copy the lib (.a file) and its headres files to the folder you've created in point 2 (*)
+3) Copy the lib (.a file) and its header files(*) to the folder you've created in point 2.
 4) Download yasm from http://yasm.tortall.net/ and place "yasm.exe" somewhere within your system's PATH.
 5) Execute "bash winconfig.sh"
 6) Execute "make -f Makefile.w64" or "make -f Makefile.w32" (depending which arch you need)
