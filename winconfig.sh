@@ -13,7 +13,7 @@ if test -z "$YASM"; then
 fi
 
 # test yasm
-$YASM -f elf64 -o /tmp/secp256k1-$$.o - <<EOF
+$YASM -f win64 -o /tmp/secp256k1-$$.o - <<EOF
 	BITS 64
 	GLOBAL testyasm
 	ALIGN 32
@@ -28,7 +28,7 @@ int main() {
     return 0;
 }
 EOF
-    $CC $CFLAGS -std=c99 /tmp/secp256k1-$$-2.o /tmp/secp256k1-$$.o 2>/dev/null
+    $CC $CFLAGS -std=c99 /tmp/secp256k1-$$-2.o /tmp/secp256k1-$$.o -o /dev/null 2>/dev/null
     if [ "$?" = 0 ]; then
         HAVE_YASM=1
     fi
@@ -37,7 +37,7 @@ fi
 
 # test openssl
 HAVE_OPENSSL=0
-$CC $CFLAGS -std=c99 -x c - -lcrypto -I openssl -L openssl 2>/dev/null <<EOF
+$CC $CFLAGS -std=c99 -x c - -o null.exe -lcrypto -I openssl -L openssl 2>/dev/null <<EOF
 #include <openssl/bn.h>
 int main() {
     BN_CTX *ctx = BN_CTX_new();
@@ -48,11 +48,12 @@ EOF
 if [ "$?" = 0 ]; then
     HAVE_OPENSSL=1
 fi
+rm -f null.exe
 
 # test openssl/EC
 HAVE_OPENSSL_EC=0
 if [ "$HAVE_OPENSSL" = "1" ]; then
-$CC $CFLAGS -std=c99 -x c - -lcrypto -I openssl -L openssl 2>/dev/null <<EOF
+$CC $CFLAGS -std=c99 -x c - -o null.exe -lcrypto -I openssl -L openssl 2>/dev/null <<EOF
 #include <openssl/ec.h>
 #include <openssl/ecdsa.h>
 #include <openssl/obj_mac.h>
@@ -67,11 +68,12 @@ EOF
 if [ "$?" = 0 ]; then
     HAVE_OPENSSL_EC=1
 fi
+rm -f null.exe
 fi
 
 # test gmp
 HAVE_GMP=0
-$CC $CFLAGS -std=c99 -x c - -o a.exe -lgmp -I gmp -L gmp 2>/dev/null <<EOF
+$CC $CFLAGS -std=c99 -x c - -o null.exe -lgmp -I gmp -L gmp 2>/dev/null <<EOF
 #include <gmp.h>
 int main() {
     mpz_t n;
@@ -83,10 +85,11 @@ EOF
 if [ "$?" = 0 ]; then
     HAVE_GMP=1
 fi
+rm -f null.exe
 
 # test __int128
 HAVE_INT128=0
-$CC $CFLAGS -std=c99 -x c - 2>/dev/null <<EOF
+$CC $CFLAGS -std=c99 -x c - -o null.exe 2>/dev/null <<EOF
 #include <stdint.h>
 int main() {
     __int128 x = 0;
@@ -96,6 +99,7 @@ EOF
 if [ "$?" = 0 ]; then
     HAVE_INT128=1
 fi
+rm -f null.exe
 
 #default limb size
 HAVE_LIMB=52
@@ -165,8 +169,6 @@ CFLAGS_TEST_EXTRA=""
 if [ "$HAVE_OPENSSL_EC" = "1" ]; then
     CFLAGS_TEST_EXTRA="-DENABLE_OPENSSL_TESTS"
 fi
-
-rm a.exe
 
 echo "CC=$CC" > config.mk
 echo "YASM=$YASM" >>config.mk
