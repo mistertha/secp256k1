@@ -44,9 +44,3 @@ coverage: $(FILES) src/tests.c $(OBJS)
 
 libsecp256k1.a: obj/secp256k1.o $(OBJS)
 	$(AR) -rs $@ $(OBJS) obj/secp256k1.o
-
-libsecp256k1.so: obj/secp256k1.o $(OBJS)
-	$(CC) -std=$(STD) $(LDFLAGS_EXTRA) $(OBJS) obj/secp256k1.o -shared -o libsecp256k1.so
-
-libjavasecp256k1.so: $(OBJS) obj/secp256k1.o $(JAVA_FILES)
-	$(CC) -fPIC -std=$(STD) $(CFLAGS) $(CFLAGS_EXTRA) -DNDEBUG -$(OPTLEVEL) -I. src/java/org_bitcoin_NativeSecp256k1.c $(LDFLAGS_EXTRA) $(OBJS) obj/secp256k1.o -shared -o libjavasecp256k1.so
