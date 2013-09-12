@@ -3,5 +3,6 @@ bench
 tests
 *.so
 *.a
+*.dll
 config.mk
 !.gitignore
