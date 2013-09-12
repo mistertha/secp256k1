@@ -15,7 +15,7 @@ STD="gnu99"
 default: tests.exe libsecp256k1.a secp256k1.dll test_dll.exe
 
 clean:
-	rm -rf obj/*.o bench tests.exe *.a *.dll config.mk
+	rm -rf obj/*.o *.exe *.a *.dll config.mk
 
 obj/field_5x52_asm.o: src/field_5x52_asm.asm
 	$(YASM) -f win32 -o obj/field_5x52_asm.o src/field_5x52_asm.asm
@@ -45,8 +45,11 @@ coverage: $(FILES) src/tests.c $(OBJS)
 libsecp256k1.a: obj/secp256k1.o $(OBJS)
 	$(AR) -rs $@ $(OBJS) obj/secp256k1.o
 
-secp256k1.dll: dll/secp256k1_dll.c obj/secp256k1.o $(OBJS)
-	$(CC) -I include -DBUILDING_DLL -shared -o $@ $^ -Wl,--out-implib,libsecp256k1_dll.a
+obj/secp256k1_dll.o: dll/secp256k1_dll.c dll/secp256k1_dll.h
+	$(CC) -c -I include -DBUILDING_DLL dll/secp256k1_dll.c -o $@
+
+secp256k1.dll: obj/secp256k1_dll.o obj/secp256k1.o $(OBJS)
+	$(CC)  -shared -o $@ $^ $(LDFLAGS_EXTRA) -Wl,--out-implib,libsecp256k1_dll.a
 
 test_dll.exe: dll/test_dll.c libsecp256k1_dll.a
 	gcc -I include -o $@ $^
