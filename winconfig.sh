@@ -5,7 +5,7 @@ if test -f config.mk; then
 fi
 
 if test -z "$CC"; then
-    CC=cc
+    CC=gcc
 fi
 
 if test -z "$YASM"; then
