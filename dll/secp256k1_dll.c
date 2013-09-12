@@ -9,7 +9,8 @@ int __stdcall EC_Verify(const unsigned char *msg, int msglen,
 	return secp256k1_ecdsa_verify(msg, msglen, sig, siglen, pubkey, pubkeylen);
 }
 
-extern "C" BOOL APIENTRY DllMain(HANDLE, DWORD, LPVOID)
+//BOOL APIENTRY DllMain(HANDLE a, DWORD b, LPVOID c)
+BOOL APIENTRY DllMain()
 {
 	secp256k1_start();
 }
