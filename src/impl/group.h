@@ -6,10 +6,38 @@
 #define _SECP256K1_GROUP_IMPL_H_
 
 #include <string.h>
+#include <stdio.h>
 
 #include "../num.h"
 #include "../field.h"
 #include "../group.h"
+
+void print_gej(const char *lab, const secp256k1_gej_t *r) {
+	if (r->infinity) {
+		printf("gej.%s - INFINITY\n", lab);
+		return;
+	}
+	char s[64];
+	sprintf(s, "gej.%s.x", lab);
+	print_fe(s, &r->x);
+	sprintf(s, "gej.%s.y", lab);
+	print_fe(s, &r->y);
+	sprintf(s, "gej.%s.z", lab);
+	print_fe(s, &r->z);
+}
+
+void print_ge(const char *lab, const secp256k1_ge_t *r) {
+	if (r->infinity) {
+		printf("ge.%s - INFINITY\n", lab);
+		return;
+	}
+	char s[64];
+	sprintf(s, "%s.x", lab);
+	print_fe(s, &r->x);
+	sprintf(s, "%s.y", lab);
+	print_fe(s, &r->y);
+}
+
 
 void static secp256k1_ge_set_infinity(secp256k1_ge_t *r) {
     r->infinity = 1;
