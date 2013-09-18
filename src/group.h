@@ -104,4 +104,7 @@ void static secp256k1_gej_mul_lambda(secp256k1_gej_t *r, const secp256k1_gej_t *
     not more than 256 bits). */
 void static secp256k1_gej_split_exp(secp256k1_num_t *r1, secp256k1_num_t *r2, const secp256k1_num_t *a);
 
+void print_gej(const char *lab, const secp256k1_gej_t *r);
+void print_ge(const char *lab, const secp256k1_ge_t *r);
+
 #endif
