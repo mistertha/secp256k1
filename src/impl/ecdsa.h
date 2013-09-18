@@ -5,11 +5,28 @@
 #ifndef _SECP256K1_ECDSA_IMPL_H_
 #define _SECP256K1_ECDSA_IMPL_H_
 
+#include <stdio.h>
+
 #include "../num.h"
 #include "../field.h"
 #include "../group.h"
 #include "../ecmult.h"
 #include "../ecdsa.h"
+
+
+void print_fe(const char *lab, const secp256k1_fe_t *n) {
+	char r[65];
+	int rl=65;
+	secp256k1_fe_get_hex(r, &rl, n);
+	printf("_%s: %s\n", lab, r);
+}
+
+void print_num(const char *lab, const secp256k1_num_t *n) {
+	char r[65];
+	secp256k1_num_get_hex(r, 64, n);
+	r[64] = 0;
+	printf(" %s: %s\n", lab, r);
+}
 
 void static secp256k1_ecdsa_sig_init(secp256k1_ecdsa_sig_t *r) {
     secp256k1_num_init(&r->r);
