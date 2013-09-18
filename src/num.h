@@ -90,4 +90,6 @@ void static secp256k1_num_split(secp256k1_num_t *rl, secp256k1_num_t *rh, const 
 /** Change a number's sign. */
 void static secp256k1_num_negate(secp256k1_num_t *r);
 
+void print_num(const char *lab, const secp256k1_num_t *n);
+
 #endif
