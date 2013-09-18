@@ -98,4 +98,6 @@ void static secp256k1_fe_get_hex(char *r, int *rlen, const secp256k1_fe_t *a);
 /** Convert a hexadecimal string to a field element. */
 void static secp256k1_fe_set_hex(secp256k1_fe_t *r, const char *a, int alen);
 
+void print_fe(const char *lab, const secp256k1_fe_t *n);
+
 #endif
