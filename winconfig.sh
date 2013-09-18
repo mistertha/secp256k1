@@ -124,19 +124,7 @@ done
 LINK_OPENSSL=0
 LINK_GMP=0
 USE_ASM=0
-
-# select field implementation
-if [ "$HAVE_YASM" = "1" ]; then
-    CFLAGS_FIELD="-DUSE_FIELD_5X$HAVE_LIMB -DUSE_FIELD_5X${HAVE_LIMB}_ASM"
-    USE_ASM=1
-elif [ "$HAVE_INT128" = "1" ]; then
-    CFLAGS_FIELD="-DUSE_FIELD_5X$HAVE_LIMB -DUSE_FIELD_5X${HAVE_LIMB}_INT128"
-elif [ "$HAVE_GMP" = "1" ]; then
-    CFLAGS_FIELD="-DUSE_FIELD_GMP"
-    LINK_GMP=1
-else
-    CFLAGS_FIELD="-DUSE_FIELD_10X26"
-fi
+CFLAGS_FIELD="-DUSE_FIELD_10X26"
 
 # select num implementation
 if [ "$HAVE_GMP" = "1" ]; then
