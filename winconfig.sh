@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if test -f config.mk; then
+    echo "config.mk already exists"
     exit 0
 fi
 
@@ -13,26 +14,28 @@ if test -z "$YASM"; then
 fi
 
 # test yasm
-$YASM -f win64 -o /tmp/secp256k1-$$.o - <<EOF
+$YASM -f win64 -o null-$$.o - <<EOF
 	BITS 64
 	GLOBAL testyasm
 	ALIGN 32
 testyasm:
 	xor r9,r9
 EOF
+
 if [ "$?" = 0 ]; then
-    $CC $CFLAGS -std=c99 -x c -c - -o /tmp/secp256k1-$$-2.o 2>/dev/null <<EOF
+    $CC $CFLAGS -std=c99 -x c -c - -o null-$$-2.o 2>/dev/null <<EOF
 void __attribute__ ((sysv_abi)) testyasm(void);
 int main() {
     testyasm();
     return 0;
 }
 EOF
-    $CC $CFLAGS -std=c99 /tmp/secp256k1-$$-2.o /tmp/secp256k1-$$.o -o /dev/null 2>/dev/null
+    $CC $CFLAGS -std=c99 null-$$-2.o null-$$.o -o null.exe 2>/dev/null
+
     if [ "$?" = 0 ]; then
         HAVE_YASM=1
     fi
-    rm -rf /tmp/secp256k1-$$-2.o /tmp/secp256k1-$$.o
+    rm -rf null-$$-2.o null-$$.o
 fi
 
 # test openssl
@@ -124,7 +127,19 @@ done
 LINK_OPENSSL=0
 LINK_GMP=0
 USE_ASM=0
-CFLAGS_FIELD="-DUSE_FIELD_10X26"
+
+# select field implementation
+if [ "$HAVE_YASM" = "1" ]; then
+    CFLAGS_FIELD="-DUSE_FIELD_5X$HAVE_LIMB -DUSE_FIELD_5X${HAVE_LIMB}_ASM"
+    USE_ASM=1
+elif [ "$HAVE_INT128" = "1" ]; then
+    CFLAGS_FIELD="-DUSE_FIELD_5X$HAVE_LIMB -DUSE_FIELD_5X${HAVE_LIMB}_INT128"
+elif [ "$HAVE_GMP" = "1" ]; then
+    CFLAGS_FIELD="-DUSE_FIELD_GMP"
+    LINK_GMP=1
+else
+    CFLAGS_FIELD="-DUSE_FIELD_10X26"
+fi
 
 # select num implementation
 if [ "$HAVE_GMP" = "1" ]; then
