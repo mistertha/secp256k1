@@ -6,3 +6,4 @@ tests
 *.dll
 config.mk
 !.gitignore
+gmp
